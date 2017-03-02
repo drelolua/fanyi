@@ -24,7 +24,8 @@ def fanyi(q):
 if __name__ == '__main__':
     q = ''
     try:
-        q = ' '.join(sys.argv[1:])
+        qargs = sys.argv[1]
+        q = '+'.join(qargs.split(' '))
     except IndexError as e:
         print('No word to fanyi')
     jso = fanyi(q)
