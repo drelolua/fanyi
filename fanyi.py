@@ -61,8 +61,9 @@ if __name__ == '__main__':
         result = jso['data']['result']
         #if isinstance(result,type([])):
         if jso['data']['type']==1:
+            s = ''
             for i in result:
-                s = "pre.%s \n" % i['pre']
+                s += "pre.%s \n" % i['pre']
                 s += "cont. %s\n"% i['cont']
         else:
             s = "大概要查的是: %s"% result.encode('utf-8')
