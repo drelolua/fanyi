@@ -69,7 +69,7 @@ if __name__ == '__main__':
             s = "Maybe is : %s"% result
     print(s)
     data = {
-        'key':qargs.decode('gbk'),
+        'key':qargs.decode('utf8'),
         'resp':s.replace('\n', ' '),
         'resp_jso':json.dumps(jso),
         'at_int':int(t),
