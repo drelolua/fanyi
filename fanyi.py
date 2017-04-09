@@ -19,7 +19,7 @@ def fanyi(q):
     q = q
     try:
         res = urllib2.urlopen(url+'?q=%s' % q)
-        jso = res.read()
+        jso = res.read().decode('utf8')
         jso = json.loads(jso)
     except HTTPError as e:
         jso = {'errno':1,'error':'Only single word supported.%s' % str(e)}
@@ -66,7 +66,7 @@ if __name__ == '__main__':
                 s += "pre.%s \n" % i['pre']
                 s += "cont. %s\n"% i['cont']
         else:
-            s = u"大概要查的是: %s"% result
+            s = "Maybe is : %s"% result
     print(s)
     data = {
         'key':qargs.decode('gbk'),
