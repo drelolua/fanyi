@@ -66,10 +66,10 @@ if __name__ == '__main__':
                 s += "pre.%s \n" % i['pre']
                 s += "cont. %s\n"% i['cont']
         else:
-            s = "大概要查的是: %s"% result.encode('utf-8')
+            s = u"大概要查的是: %s"% result
     print(s)
     data = {
-        'key':qargs,
+        'key':qargs.decode('gbk'),
         'resp':s.replace('\n', ' '),
         'resp_jso':json.dumps(jso),
         'at_int':int(t),
