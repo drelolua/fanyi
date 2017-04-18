@@ -74,7 +74,7 @@ def ifalready_translated(q):
     cur = conn.cursor()
 
     sql = 'select resp from log where keyword = "%s";' % q
-    print(sql)
+    #print(sql)
     cur.execute(sql)
 
     res = cur.fetchall()
