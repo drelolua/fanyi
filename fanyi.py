@@ -8,7 +8,6 @@ import sys
 import os
 import urllib2
 import sqlite3
-from urllib2 import HTTPError
 import time
 
 url = "https://sp1.baidu.com/5b11fzupBgM18t7jm9iCKT-xh_/sensearch/selecttext"
@@ -17,12 +16,9 @@ db_path = home+"/.config/fanyi/fanyi.db"
 
 def fanyi(q):
     q = q
-    try:
-        res = urllib2.urlopen(url+'?q=%s' % q)
-        jso = res.read().decode('utf8')
-        jso = json.loads(jso)
-    except HTTPError as e:
-        jso = {'errno':1,'error':'Only single word supported.%s' % str(e)}
+    res = urllib2.urlopen(url+'?q=%s' % q)
+    jso = res.read().decode('utf8')
+    jso = json.loads(jso)
 
     return jso
 
@@ -42,18 +38,8 @@ def save(data):
     conn.commit()
     conn.close()
 
-
-
-if __name__ == '__main__':
-    q = ''
-    qargs = ''
+def query(q):
     s = ''
-    t = time.time()
-    try:
-        qargs = sys.argv[1]
-        q = '+'.join(qargs.split(' '))
-    except IndexError as e:
-        s = 'No word to fanyi'
     jso = fanyi(q)
     if jso['errno']==1:
         s = jso['error']
@@ -67,13 +53,56 @@ if __name__ == '__main__':
                 s += "cont. %s\n"% i['cont']
         else:
             s = "Maybe is : %s"% result
-    print(s)
+
+    t = time.time()
     data = {
         'key':qargs.decode('utf8'),
-        'resp':s.replace('\n', ' '),
+        'resp':s,
         'resp_jso':json.dumps(jso),
         'at_int':int(t),
         'at_str':time.strftime(u"%Y-%m-%d %H:%M:%S", time.localtime(t))
 
     }
     save(data)
+    return s
+
+def ifalready_translated(q):
+    already = False
+    resp = None
+
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+
+    sql = 'select resp from log where keyword = "%s";' % q
+    cur.execute(sql)
+
+    res = cur.fetchall()
+
+    cur.close()
+    conn.commit()
+    conn.close()
+
+    if len(res) > 0:
+        already = True
+        resp = res[0][0]
+        #print("Already faned, resp is: %s" %resp)
+
+
+    return already,resp
+
+
+if __name__ == '__main__':
+    q = ''
+    qargs = ''
+    s = ''
+    try:
+        qargs = sys.argv[1]
+        q = '+'.join(qargs.split(' '))
+    except IndexError:
+        s = 'No word to fanyi'
+    already,s = ifalready_translated(q)
+    if not already:
+        s = query(q)
+
+    print(s)
+
