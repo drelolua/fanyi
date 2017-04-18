@@ -38,7 +38,8 @@ def save(data):
     conn.commit()
     conn.close()
 
-def query(q,qargs):
+def query(qargs):
+    q = '+'.join(qargs.split(' '))
     s = ''
     jso = fanyi(q)
     if jso['errno']==1:
@@ -94,16 +95,14 @@ def ifalready_translated(q):
 
 if __name__ == '__main__':
     q = ''
-    qargs = ''
     s = ''
     try:
         qargs = sys.argv[1]
-        q = '+'.join(qargs.split(' '))
     except IndexError:
         s = 'No word to fanyi'
     already,s = ifalready_translated(qargs)
     if not already:
-        s = query(q,qargs)
+        s = query(qargs)
 
     print(s)
 
