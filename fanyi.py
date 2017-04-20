@@ -33,6 +33,7 @@ def save(data):
     ;
     '''
     sql = fmt.format(data)
+    #print(sql)
     cur.execute(sql)
     cur.close()
     conn.commit()
@@ -57,9 +58,9 @@ def query(qargs):
 
     t = time.time()
     data = {
-        'key':qargs.decode('utf8'),
-        'resp':s,
-        'resp_jso':json.dumps(jso),
+        'key':qargs.decode('utf8').replace('\'', '\'\''),
+        'resp':s.replace('\'', '\'\''),
+        'resp_jso':json.dumps(jso).replace('\'', '\'\''),
         'at_int':int(t),
         'at_str':time.strftime(u"%Y-%m-%d %H:%M:%S", time.localtime(t))
 
